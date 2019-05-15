@@ -14,7 +14,7 @@
 #endif
 
 
-#if defined (LYNX) || defined (HPRT) || defined (LINUX)
+#if defined (LINUX)
 
 #undef NULL
 #include <stdio.h>
