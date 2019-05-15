@@ -1,5 +1,5 @@
 
-#include <MEN/typdefs.h>
+#include "typdefs.h"
 
 #ifndef _HWBUG_H_
 #define _HWBUG_H_
@@ -42,6 +42,7 @@ extern u_int32 os_access_address( );
 #endif
 
 int make_hex( );
+int line_args( );
 
 extern u_int8 G_iomapped;  /**< flag for performing io-mapped access */
 

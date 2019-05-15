@@ -22,24 +22,19 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-MAK_NAME=hwbug
-
-MAK_LIBS=$(LIB_PREFIX)$(MEN_LIB_DIR)/usr_utl$(LIB_SUFFIX) \
-         $(LIB_PREFIX)$(MEN_LIB_DIR)/uti$(LIB_SUFFIX)\
-
-MAK_INCL=$(MEN_INC_DIR)/men_typs.h	\
-         $(MEN_INC_DIR)/usr_utl.h   \
-         $(MEN_INC_DIR)/testutil.h  
+MAK_NAME=hwbug_ppc
 
 MAK_INP1=hwbug$(INP_SUFFIX)
 MAK_INP2=display$(INP_SUFFIX)
 MAK_INP3=history$(INP_SUFFIX)
 MAK_INP4=change$(INP_SUFFIX)
 MAK_INP5=linux$(INP_SUFFIX)
+MAK_INP6=line_args$(INP_SUFFIX)
+MAK_INP7=strsave$(INP_SUFFIX)
 
 MAK_SWITCH=-DLINUX \
          -DMAC_IO_MAPPED_EN
 
 MAK_LD_SWITCH=-Wl -Wl,-Map -Wl,hwbug.map
 
-MAK_INP=$(MAK_INP1) $(MAK_INP2) $(MAK_INP3) $(MAK_INP4) $(MAK_INP5) 
+MAK_INP=$(MAK_INP1) $(MAK_INP2) $(MAK_INP3) $(MAK_INP4) $(MAK_INP5) $(MAK_INP6) $(MAK_INP7)

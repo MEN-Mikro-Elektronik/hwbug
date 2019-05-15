@@ -46,7 +46,6 @@
 static char RCSid[]="$Header: /dd2/CVSR/LINUX/TOOLS/HWBUG/hwbug.c,v 1.5 2010/09/24 17:02:30 rt Exp $";
 
 #include "hwbug.h"
-#include <MEN/uti.h>
 
 #define MAX_LINELENGTH 	100		/* length of command line */
 #define MAX_ARGS 		10		/* max. number of args in cmd line */
@@ -298,7 +297,7 @@ int main(int argc, char **argv)
 	if( cmd_line_mode ) {
 		printf(",------------------------------,\n");
 		printf("|   HwBug - Hardware Debugger  |\n");
-		printf("|      (c) MEN 1993-2010       |\n");
+		printf("|      (c) MEN 1993-2019       |\n");
 		printf("|    by K.Popp, R.Seeberger    |\n");
 		printf("|                              |\n");
 		printf("|   Press 'H' for help-screen  |\n");
