@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-MAK_NAME=hwbug_ppc
+MAK_NAME=hwbug
 
 MAK_INP1=hwbug$(INP_SUFFIX)
 MAK_INP2=display$(INP_SUFFIX)

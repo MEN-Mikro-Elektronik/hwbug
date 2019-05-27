@@ -39,9 +39,9 @@ or run make separately:
     $ cd ~/HWBUG
     $ make
 
-The output will be a binary file: hwbug_ppc
+The output will be a binary file: hwbug
 
 **Package is delivered with binaries for platforms:**
 
 -  32bit x86 (hwbug_x86)
--  PowerPc / cisco 4500 (hwbug)
+-  PowerPc / cisco 4500 (hwbug_ppc)

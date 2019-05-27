@@ -1,4 +1,4 @@
-OBJ 	= hwbug_ppc
+OBJ 	= hwbug
 
 MEN_LIN_DIR=/opt/menlinux
 
@@ -25,4 +25,4 @@ $(OBJ):	$(FILES)
 clean: clean_hwbug
 
 clean_hwbug:
-	rm -rf $(HWBUG_DIR)/*.o $(HWBUG_DIR)/hwbug_ppc
+	rm -rf $(HWBUG_DIR)/*.o $(HWBUG_DIR)/hwbug
