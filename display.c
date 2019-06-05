@@ -3,9 +3,7 @@
  *         Name: display.c
  *      Project: HwBug
  *
- *      $Author: GLeonhardt $
- *        $Date: 2008/09/15 13:15:17 $
- *    $Revision: 1.2 $
+ *      Author: GLeonhardt 
  *
  *  Description: dump memory contents
  *                      
@@ -34,8 +32,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
-static char RCSid[]="$Header: /dd2/CVSR/LINUX/TOOLS/HWBUG/display.c,v 1.2 2008/09/15 13:15:17 GLeonhardt Exp $";
 
 #include "hwbug.h"
 
@@ -111,8 +107,6 @@ int32 n,fmt;
 	char *buf = (char*)adr;
     char  *k, *k0, *kmax = buf+n;
 	char  lbuf[16];
-    /* include ident string, suppress warning */
-    char a = a = RCSid[0];
     
     for (k=k0=buf; k0<kmax; k0+=16) {   
         printf("%08lx+%04x: ",(int32)buf, (int16)(k-buf));

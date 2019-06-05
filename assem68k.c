@@ -3,9 +3,7 @@
  *         Name: assem68k.c
  *      Project: HwBug
  *
- *      $Author: ub $
- *        $Date: 2003/05/26 10:05:46 $
- *    $Revision: 1.1 $
+ *      Author: ub 
  *
  *  Description: Line-by-Line assembler and disassembler
  *                      
@@ -36,7 +34,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
-static char RCSid[]="$Header: /dd2/CVSR/LINUX/TOOLS/HWBUG/assem68k.c,v 1.1 2003/05/26 10:05:46 ub Exp $";
 #include "hwbug.h"
 
 u_int8 assembler_buffer[1024];

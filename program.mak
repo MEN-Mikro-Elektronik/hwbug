@@ -1,8 +1,6 @@
 #***************************  M a k e f i l e  *******************************
 #
 #         Author: ts
-#          $Date: 2008/09/15 13:15:41 $
-#      $Revision: 1.1 $
 #
 #    Description: Makefile definitions for the FILETYPE mcvs tool
 #
@@ -23,6 +21,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 MAK_NAME=hwbug
+# the next line is updated during the MDIS installation
+STAMPED_REVISION="1eb05a4-dirty_2019-05-27"
+
+DEF_REVISION=MAK_REVISION=$(STAMPED_REVISION)
 
 MAK_INP1=hwbug$(INP_SUFFIX)
 MAK_INP2=display$(INP_SUFFIX)
@@ -33,6 +35,7 @@ MAK_INP6=line_args$(INP_SUFFIX)
 MAK_INP7=strsave$(INP_SUFFIX)
 
 MAK_SWITCH=-DLINUX \
+		$(SW_PREFIX)$(DEF_REVISION) \
          -DMAC_IO_MAPPED_EN
 
 MAK_LD_SWITCH=-Wl -Wl,-Map -Wl,hwbug.map

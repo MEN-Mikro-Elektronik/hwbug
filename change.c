@@ -3,9 +3,7 @@
  *         Name: change.c
  *      Project: HwBug
  *
- *      $Author: GLeonhardt $
- *        $Date: 2008/09/15 13:15:15 $
- *    $Revision: 1.2 $
+ *      Author: GLeonhardt 
  *
  *  Description: change memory contents
  *                      
@@ -37,7 +35,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
-static char RCSid[]="$Header: /dd2/CVSR/LINUX/TOOLS/HWBUG/change.c,v 1.2 2008/09/15 13:15:15 GLeonhardt Exp $";
 #include "hwbug.h"
 
 void _change_data();
@@ -50,8 +47,6 @@ int change_data( int argc, char **argv)
 	static u_int32 last_adr;
 	u_int32 adr;
 	char *cmdarg = argv[0];
-    /* include ident string, suppress warning */
-    char a = a = RCSid[0];
 	
 	/*--------------+
 	| get options   |

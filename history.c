@@ -3,9 +3,7 @@
  *         Name: history.c
  *      Project: HwBug
  *
- *      $Author: rt $
- *        $Date: 2010/09/24 16:58:01 $
- *    $Revision: 1.3 $
+ *      Author: rt 
  *
  *  Description: history functions
  *                      
@@ -13,9 +11,6 @@
  *     Required: - 
  *     Switches: - 
  *
- *---------------------------[ Public Functions ]----------------------------
- *  
- *  
  *---------------------------------------------------------------------------
  * Copyright (c) 1993-2019, MEN Mikro Elektronik GmbH
  ****************************************************************************/
@@ -33,8 +28,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
-static char RCSid[]="$Header: /dd2/CVSR/LINUX/TOOLS/HWBUG/history.c,v 1.3 2010/09/24 16:58:01 rt Exp $";
+
 #include "hwbug.h"
 
 #define HISTORY_SIZE	30		/* number of commands kept */
@@ -67,8 +61,6 @@ char **p;
  */
 void hist_init(void)
 {
-    /* include ident string, suppress warning */
-    char a = a = RCSid[0];
 	setnext = current = histbuf;
 }
 

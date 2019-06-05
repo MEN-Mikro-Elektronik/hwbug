@@ -3,9 +3,7 @@
  *         Name: os9.c
  *      Project: HwBug
  *
- *      $Author: ub $
- *        $Date: 2003/05/26 10:06:11 $
- *    $Revision: 1.1 $
+ *      Author: ub 
  *
  *  Description: OS-9 specific functions
  *                      
@@ -42,9 +40,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
-static char RCSid[]="$Header: /dd2/CVSR/LINUX/TOOLS/HWBUG/os9.c,v 1.1 2003/05/26 10:06:11 ub Exp $";
-
 
 #include "hwbug.h"
 #include <sgstat.h>

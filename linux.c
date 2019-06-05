@@ -4,8 +4,6 @@
  *      Project: HwBug
  *
  *       Author: ub
- *        $Date: 2010/09/24 16:51:56 $
- *    $Revision: 1.6 $
  *
  *  Description: Linux specific functions
  *               Bus errors are not catched and cause program termination.
@@ -42,8 +40,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-static char RCSid[]="$Header: /dd2/CVSR/LINUX/TOOLS/HWBUG/linux.c,v 1.6 2010/09/24 16:51:56 rt Exp $";
-
 #include "hwbug.h"
 #include <ctype.h>
 #include <unistd.h>
@@ -64,9 +60,6 @@ void os_usage(argc,argv)
 int argc;
 char **argv;
 {
-    /* include ident string, suppress warning */
-    char a = a = RCSid[0];
-
 	if (argc==2 && !strcmp(argv[1],"-?")) {
 		printf("Syntax: hwbug or hwbug [command]\n");
 		printf("Function: Hardware Debugger for Linux\n");

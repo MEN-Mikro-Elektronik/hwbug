@@ -4,9 +4,7 @@
  ************                                                    ************
  ****************************************************************************
  *
- *      $Author: rt $
- *        $Date: 2010/09/24 17:02:30 $
- *    $Revision: 1.5 $
+ *      Author: rt 
  *
  *  Description: Simple Debugger for Hardware Development Purpose
  *
@@ -42,8 +40,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-static char RCSid[]="$Header: /dd2/CVSR/LINUX/TOOLS/HWBUG/hwbug.c,v 1.5 2010/09/24 17:02:30 rt Exp $";
 
 #include "hwbug.h"
 
@@ -239,7 +235,6 @@ int help_screen()
 	printf(" ^H = delete char      ^X = kill line\n");
 	printf("\n");
 	printf("Version:\n");
-	printf(" %s\n", &RCSid[9]);
 	
 	return 0;
 }
@@ -276,8 +271,6 @@ int main(int argc, char **argv)
 {
 	char *line;
 	cmd_desc *c = NULL, *last_cmd = 0L;
-    /* include ident string, suppress warning */
-    char a = a = RCSid[0];
     int cmd_line_mode = 1;
     int error = 0;
 
@@ -297,11 +290,11 @@ int main(int argc, char **argv)
 	if( cmd_line_mode ) {
 		printf(",------------------------------,\n");
 		printf("|   HwBug - Hardware Debugger  |\n");
-		printf("|      (c) MEN 1993-2019       |\n");
 		printf("|    by K.Popp, R.Seeberger    |\n");
 		printf("|                              |\n");
 		printf("|   Press 'H' for help-screen  |\n");
 		printf(" ------------------------------'\n\n");
+		printf("Copyright (c) 1993-2019, MEN Mikro Elektronik GmbH\n");
 	}
 
 	os_init();
