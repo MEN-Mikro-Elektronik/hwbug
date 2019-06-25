@@ -52,12 +52,12 @@ char *termchars;	/* termination characters */
 	/* scan input line */
 
 	for(u = argbuf, p = lp;  argc < maxargs; p++){ 	
-
-                if (strchr(termchars, *p))      /* terminator */
-                  term=1;
-                if(strchr(separators, *p))      /* separator */
-                  sep=1;
-                if(p)
+		sep=0;
+		if (strchr(termchars, *p))      /* terminator */
+		  term=1;
+		if(strchr(separators, *p))      /* separator */
+		  sep=1;
+		if(p)
 		  end  = (*p == '\0');          /* end of string */
 		if(*p == '"')
                   quote = !quote;

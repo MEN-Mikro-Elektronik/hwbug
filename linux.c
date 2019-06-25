@@ -171,7 +171,7 @@ u_int32 os_access_address( physadr, size, read, value, be_flag )
 u_int32 physadr;
 int size, read;
 u_int32 value;
-int *be_flag;
+u_int32 *be_flag;
 {
 	void *map_adr, *adr;
 
