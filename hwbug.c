@@ -44,7 +44,7 @@
 #include "hwbug.h"
 
 #define MAX_LINELENGTH 	100		/* length of command line */
-#define MAX_ARGS 		10		/* max. number of args in cmd line */
+#define MAX_ARGS        10      /* max. number of args in cmd line */
 #define CTRL(c) ((c)-'@')
 
 extern int errno;
@@ -52,12 +52,12 @@ char *m_prompt = "HwBug> ";
 int exit_hwbug = 0;
 int control_c = 0;
 
-u_int8 G_iomapped = 0;
+uint8_t G_iomapped = 0;
 
 static char
 	*h_h  = "                            Display help",
 	*h_q  = "                            Quit",
-	*h_c  = "[B|W|L|N|#] <adr>           Change Memory \n\
+	*h_c  = "[B|W|L|N|#] <adr> [val]     Change Memory \n\
                               (B)yte (W)ord (L)ong (N)oRead (#)Increm.",
 	*h_d  = "[B|W|L] [<adr> <cnt>]       Display Memory \n\
                               (B)yte (W)ord (L)ong",
@@ -76,8 +76,8 @@ typedef struct _cmd_desc{
 	struct  _cmd_desc *next;
 	char 	*command;			/* command name */
 	char 	*helpline;			/* help line */
-	int		repeat;				/* repeat if empty line entered? */
-	int		(*func)();			/* function to call */
+	int	repeat;				/* repeat if empty line entered? */
+	int	(*func)();			/* function to call */
 } cmd_desc;
 
 static cmd_desc *cmd_head = 0L;	/* command list header */
@@ -85,13 +85,8 @@ static cmd_desc *cmd_head = 0L;	/* command list header */
 /*----------------------------------------------------------------------
  * add_command - add a command to the command list
  */
-//void add_command(char *command, int (*func)(), char *helpline, int repeat )
 void add_command(char *command, void *func, char *helpline, int repeat )
 {
-/* 	;           /\* command name *\/ */
-/* 	;          /\* function to call *\/ */
-/* 	char    *helpline;          /\* help line *\/ */
-/* int     repeat;             /\* repeat if empty line entered? *\/ */
 
 	/* extern char *malloc(); */
 	cmd_desc *cmd;
@@ -100,10 +95,10 @@ void add_command(char *command, void *func, char *helpline, int repeat )
 		return;
 
 	cmd->command 	= command;
-	cmd->func 		= func;
+	cmd->func 	= func;
 	cmd->helpline	= helpline;
-	cmd->repeat		= repeat;
-	cmd->next		= 0L;
+	cmd->repeat	= repeat;
+	cmd->next	= 0L;
 
 	if( cmd_head == 0L )
 		cmd_head = cmd;
@@ -147,27 +142,26 @@ char *prompt;
 		c = os_get_char();
 
 		if( c == -1 ){
-/*			printf("\n***Read I/O error %d\n", errno ); */
 			cursor = linebuf;
 			continue;
 		}
 		
-		if( c==27 || c=='[' ) {		/* ESC sequence */
+		if( c==27 || c=='[' ) {					/* ESC sequence */
 			if( c==27 ) esc_seq = 1;
 			if( c=='[' && esc_seq == 1 ) esc_seq=2;
 		}
 		else {
 			if( esc_seq == 2 ) {
-				if( c=='A' ) c = CTRL('W');			/* up=prev */
-				else if( c=='B' ) c = CTRL('Z');	/* down=next */
-				else c = 0;							/* ignore */
+				if( c=='A' ) c = CTRL('W');		/* up=prev */
+				else if( c=='B' ) c = CTRL('N');	/* down=next */
+				else c = 0;				/* ignore */
 			}
-			if( c==127 ) c=CTRL('H');				/* backspace */
-			if( c=='~' ) c=CTRL('X');				/* del=clear line */
+			if( c==127 ) c=CTRL('H');			/* backspace */
+			if( c=='~' ) c=CTRL('X');			/* del=clear line */
 			
 			switch( c ){
 			case CTRL('W'):					/* previous command from hist. */
-			case CTRL('Z'):					/* next command from hist */
+			case CTRL('N'):					/* next command from hist */
 				if( c == CTRL('W') ) {
 					hist_cmd = hist_prev();
 					if( !hist_cmd ) break;
@@ -191,11 +185,10 @@ char *prompt;
 	
 			case CTRL('H'):					/* backspace */
 				if( cursor != linebuf ){
-					*cursor-- = '\0';
-	
-					printf(	"\b \b" );
+//					cursor--;
+//					*cursor-- = '\0';
+					printf(	"\b " );
 				}
-				break;
 			case CTRL('X'):					/* clear line */
 				clearline( cursor-linebuf );
 				*linebuf = '\0';
@@ -231,10 +224,10 @@ int help_screen()
 	}
 	printf("\n");
 	printf("Line Editing Features:\n");
-	printf(" ^W = up history       ^Z = down history\n");
+	printf(" ^W = up history       ^N = down history\n");
 	printf(" ^H = delete char      ^X = kill line\n");
 	printf("\n");
-	printf("Version:\n");
+	printf("Version: 2.0, 2018\n");
 	
 	return 0;
 }
@@ -248,12 +241,12 @@ int quit()
 
 void what()
 {
-	printf("what? (Press 'H' for help-screen)\n");
+	printf("Undefined parameter. Press 'H' for help-screen\n");
 }
 
 int access_io_mapped()
 {
-	int32 error = 0;
+	int32_t error = 0;
 	if( (error = os_init_io_mapped()) < 0)
 		printf("IO-Mapped access not supported or initialization failed\n");
 	
@@ -271,8 +264,9 @@ int main(int argc, char **argv)
 {
 	char *line;
 	cmd_desc *c = NULL, *last_cmd = 0L;
-    int cmd_line_mode = 1;
-    int error = 0;
+	/* include ident string, suppress warning */
+	int os_mode = 1;
+	int error = 0;
 
 	/* extern int change_data(), fill_data(), display_data(); */
 
@@ -280,14 +274,22 @@ int main(int argc, char **argv)
 	char **c_argv = c_argv_alloc;
 	int c_argc;
 
+	add_command( "H", help_screen, h_h, 0 );
+	add_command( "C", change_data, h_c, 0 );
+	add_command( "F", fill_data, h_f, 0 );
+	add_command( "D", display_data, h_d, 1 );
+	add_command( "Q", quit, h_q, 0 );
+	add_command( "I", access_io_mapped, h_i, 0 );
+	add_command( "M", access_mem_mapped, h_m, 0 );
+
 	os_usage(argc,argv);
 	
 	/* check parameters */
 	if( argc > 1 ){
-		cmd_line_mode = 0;
+		os_mode = 0;
 	}
 
-	if( cmd_line_mode ) {
+	if( os_mode ) {
 		printf(",------------------------------,\n");
 		printf("|   HwBug - Hardware Debugger  |\n");
 		printf("|    by K.Popp, R.Seeberger    |\n");
@@ -301,20 +303,12 @@ int main(int argc, char **argv)
 
 	hist_init();
 	
-	add_command( "H", help_screen, h_h, 0 );
-	add_command( "C", change_data, h_c, 0 );
-	add_command( "F", fill_data, h_f, 0 );
-	add_command( "D", display_data, h_d, 1 );
-	add_command( "Q", quit, h_q, 0 );
-	add_command( "I", access_io_mapped, h_i, 0 );
-	add_command( "M", access_mem_mapped, h_m, 0 );
-
 	while(!exit_hwbug){
 		control_c = 0;
 		
-		if( cmd_line_mode ) {
+		if( os_mode ) {
 			/*------------------+
-			| get command line  |
+			|   get command     |
 			+------------------*/
 			line = get_line(m_prompt);
 	
@@ -322,13 +316,13 @@ int main(int argc, char **argv)
 			| split command line into arguments |
 			+----------------------------------*/
 			c_argc = line_args( line, c_argv, MAX_ARGS, ", \t", "\n" );
+			//c_argc = getopt(MAX_ARGS, c_argv, line);
 		}
 		else {
 			/*-------------------------------+
 			| command line passed from shell |
 			+-------------------------------*/
 			char *ptr;
-			
 			c_argc = argc -1;
 			c_argv = &argv[1];
 			ptr = c_argv[0];
@@ -337,7 +331,6 @@ int main(int argc, char **argv)
 			} while (*(++ptr));
 			
 		}
-
 		printf("\n");
 
 		/*--- repeat command if required ---*/
@@ -347,6 +340,7 @@ int main(int argc, char **argv)
 			}
 			goto next;
 		}
+
 		/*------------------+
 		| detect command    |
 		+------------------*/
@@ -366,22 +360,22 @@ int main(int argc, char **argv)
 			error++;
 		}
 next:
-		if(!cmd_line_mode) {
+		if(!os_mode) {
 			break;
 		}
 		c_argc = 0;
-		/* free_args( c_argv ); */
+		free_args( c_argv );
 	}
 	
 	os_exit();
 	
-	return cmd_line_mode ? 0 : error;
+	return os_mode ? 0 : error;
 }
 
 
 int make_hex( argp, hexval )
 char *argp;
-u_int32 *hexval;
+unsigned long *hexval;
 {
 	if( sscanf( argp, "%lx", hexval ) != 1 )
 		return -1;

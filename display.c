@@ -35,13 +35,13 @@
 
 #include "hwbug.h"
 
-int hex_dump(u_int32 adr,int32 n, int32 fmt); 
+int hex_dump(unsigned long adr, int32_t n, int32_t fmt); 
 
 int display_data( int argc, char **argv)
 {
 	static int o_size = 4;		/* default=long accesses */
-	u_int32 adr, count=256;
-	static u_int32 last_adr, temp_adr;
+	unsigned long adr, count=256;
+	static unsigned long last_adr, temp_adr;
 	char *cmdarg = argv[0];
 	
 	/*--------------+
@@ -99,25 +99,25 @@ int display_data( int argc, char **argv)
 }
 
 int hex_dump(adr,n,fmt)
-u_int32 adr;
-int32 n,fmt; 
+unsigned long adr;
+int32_t n,fmt; 
 {
 	extern int control_c;
-    u_int32 i, buserr, value;
+    uint32_t i, buserr, value;
 	char *buf = (char*)adr;
     char  *k, *k0, *kmax = buf+n;
 	char  lbuf[16];
     
     for (k=k0=buf; k0<kmax; k0+=16) {   
-        printf("%08lx+%04x: ",(int32)buf, (int16)(k-buf));
+        printf("%08lx+%08x: ", (unsigned long)buf,  (uint32_t)(k-buf));
 
         switch(fmt) {                                       			/* dump hex: */
            case 4 : for (k=k0,i=0; i<16 && !control_c; i+=4, k+=4) {    /* long  */
                        if (k<kmax) {  
-						   value = os_access_address(k,4,1,0,&buserr);
+						   value = os_access_address(k,4,1,0,&buserr) & 0xffffffff;
 						   if (buserr) return(1);
-						   *(u_int32*)&lbuf[i] = value;
-						   printf("%08lx ",value);
+						   *(unsigned long*)&lbuf[i] = value;
+						   printf("%08x ",value);
 					   }
                        else         
 						   printf("         ");
@@ -127,8 +127,8 @@ int32 n,fmt;
                        if (k<kmax) { 
 						   value = os_access_address(k,2,1,0,&buserr) & 0xffff;
 						   if (buserr) return(1);
-						   *(u_int16*)&lbuf[i] = value;
-						   printf("%04lx ",value);
+						   *(uint16_t*)&lbuf[i] = value;
+						   printf("%04x ",value);
 					   }
                        else
 						   printf("     ");
@@ -138,8 +138,8 @@ int32 n,fmt;
                        if (k<kmax) {
 						   value = os_access_address(k,1,1,0,&buserr) & 0xff;
 						   if (buserr) return(1);
-						   *(u_int8*)&lbuf[i] = value;
-						   printf("%02lx ",value);
+						   *(uint8_t*)&lbuf[i] = value;
+						   printf("%02x ",value);
 					   }
                        else
 						   printf("   ");

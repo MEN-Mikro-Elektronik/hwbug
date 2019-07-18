@@ -36,7 +36,7 @@
  
 #include "hwbug.h"
 
-u_int8 assembler_buffer[1024];
+uint8_t assembler_buffer[1024];
 
 disassemble( argc, argv )
 int argc;
@@ -44,8 +44,8 @@ char **argv;
 {
 	extern int control_c;
 	char textbuf[100], *text;
-	u_int32 adr, endadr, count = 40, prot_adr;
-	static u_int32 last_adr, temp_adr;
+	unsigned long adr, endadr, count = 40, prot_adr;
+	static unsigned long last_adr, temp_adr;
 		
 	if( argc == 0 ){
 		adr = temp_adr;
@@ -53,7 +53,7 @@ char **argv;
 		adr = last_adr;
 	} else if (argc >= 2 ){
 		if( *argv[1] == 'T' )
-			adr = (u_int32)assembler_buffer;
+			adr = (unsigned long)assembler_buffer;
 		else {	
 			if( make_hex( argv[1], &adr ) == -1 )
 				return 1;
@@ -90,14 +90,14 @@ char **argv;
 	extern int control_c;
 	extern char *get_line();
 	char textbuf[100], *text;
-	u_int32 adr, newadr, prot_adr;
+	unsigned long adr, newadr, prot_adr;
 	char *inline;
 	int exitflg = 0;
 	
 	if( argc < 2 ) return 1;
 
 	if( *argv[1] == 'T' )
-		adr = (u_int32)assembler_buffer;
+		adr = (unsigned long)assembler_buffer;
 	else {
 		if( make_hex( argv[1], &adr ) == -1 )
 			return 1;

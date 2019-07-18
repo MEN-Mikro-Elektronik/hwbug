@@ -19,9 +19,9 @@
  *  int  os_get_char()                   
  *  void os_setterm()                   
  *  void os_restterm()                  
- *  u_int32 os_permit_access( adr, size, name )
+ *  unsigned long os_permit_access( adr, size, name )
  *          os_protect_access( virt_adr, size, name )
- *  u_int32 os_access_address( physadr, size, read, value, be_flag )
+ *  unsigned long os_access_address( physadr, size, read, value, be_flag )
  *  
  *---------------------------------------------------------------------------
  * Copyright (c) 1993-2019, MEN Mikro Elektronik GmbH
@@ -52,11 +52,11 @@ static char
 
 void os_setterm(), os_restterm();
 static int ssm_installed;
-static u_int32 ExcJmp;
+static unsigned long ExcJmp;
 static int program_running;
 jmp_buf buserr_recover;
-static u_int32 CPUType;
-static u_int32 old_berr;
+static unsigned long CPUType;
+static unsigned long old_berr;
 static struct sgbuf termpd, oldpd;
 
 /*----------------------------------------------------------------------
@@ -180,7 +180,7 @@ permit_access( argc, argv )
 int argc;
 char **argv;
 {
-	u_int32 adr, count;
+	unsigned long adr, count;
 	
 	if( argc < 3 ) return 1;
 
@@ -218,16 +218,16 @@ int size;
 patch_berr()
 {
 	extern void buserror_catch();
-	u_int32 buserr_func;
+	unsigned long buserr_func;
 
-	buserr_func = (u_int32)buserror_catch;
+	buserr_func = (unsigned long)buserror_catch;
 
 	/*--- get old buserror routine ---*/
-	_cpymem( 0, sizeof(u_int32), ExcJmp+6, &old_berr); 		
+	_cpymem( 0, sizeof(unsigned long), ExcJmp+6, &old_berr); 		
 
 	/*--- patch new one ---*/
 	os_permit_access( (char*)ExcJmp, 100 );
-	*(u_int32 *)(ExcJmp+6) = buserr_func;
+	*(unsigned long *)(ExcJmp+6) = buserr_func;
 }
 
 /*----------------------------------------------------------------------
@@ -236,7 +236,7 @@ patch_berr()
 restore_berr()
 {
 	/*--- restore old function ---*/
-	*(u_int32 *)(ExcJmp+6) = old_berr;
+	*(unsigned long *)(ExcJmp+6) = old_berr;
 	os_protect_access((char*)(ExcJmp+6), 100);
 }
 
@@ -246,10 +246,10 @@ restore_berr()
  *			or read value
  *			be_flag is set if buserror occurred
  */
-u_int32 os_access_address( adr, size, read, value, be_flag )
-u_int32 adr;
+unsigned long os_access_address( adr, size, read, value, be_flag )
+unsigned long adr;
 int size, read;
-u_int32 value;
+uint32_t value;
 int *be_flag;
 {
 	int setjmp_val;
@@ -303,14 +303,14 @@ execute_program( argc, argv )
 int argc;
 char **argv;
 {
-	extern u_int8 assembler_buffer[];
-	u_int32 adr, prot_adr;
+	extern uint8_t assembler_buffer[];
+	unsigned long adr, prot_adr;
 	int setjmp_val;
 	
 	if( argc < 2 ) return 1;
 
 	if( *argv[1] == 'T' )
-		adr = (u_int32)assembler_buffer;
+		adr = (unsigned long)assembler_buffer;
 	else {
 		if( make_hex( argv[1], &adr ) == -1 )
 			return 1;

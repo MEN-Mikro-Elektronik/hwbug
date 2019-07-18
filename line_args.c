@@ -39,37 +39,33 @@
  */
 
 int line_args(lp, argbuf, maxargs, separators, termchars)
-char *lp;		/* input line */
+char *lp;			/* input line */
 char **argbuf;		/* ptr array for results (maxarg+1 entries !)*/
-int	 maxargs;	/* size of argbuf */
+int	 maxargs;		/* size of argbuf */
 char *separators;	/* argument separator chars */
 char *termchars;	/* termination characters */
 {
 	char 	*p, **u, *strchr(), *strsave();
-	int		end = 0, term = 0;
-	int 	argc = 0, flg = 0, quote=0, sep=0;
+	unsigned long	end = 0, term = 0, sep = 0;
+	int 	argc = 0, flg = 0, quote=0;
 
 	/* scan input line */
 
 	for(u = argbuf, p = lp;  argc < maxargs; p++){ 	
-		sep=0;
-		if (strchr(termchars, *p))      /* terminator */
-		  term=1;
-		if(strchr(separators, *p))      /* separator */
-		  sep=1;
-		if(p)
-		  end  = (*p == '\0');          /* end of string */
-		if(*p == '"')
-                  quote = !quote;
 
-		if(end && quote)                /* string end but opened '"' */
+		term = (unsigned long)strchr(termchars, *p);	/* termination character */
+		sep  = (unsigned long)strchr(separators, *p);	/* separator */
+		end	 = (*p == '\0');					/* end of string */
+		if(*p == '"') quote = !quote;
+
+		if(end && quote)	/* string end but opened '"' */
 			return -1;		/* error */
 
 		if(quote == 0 || flg == 0){	/* not in '"' */
 			if(end || term || sep){
 				if(flg == 1){
-			  		*p = 0;                         /* found string end */
-			  		if((*u = strsave(*u)) == 0)     /* save string */
+			  		*p = 0;						/* found string end */
+			  		if((*u = strsave(*u)) == 0)	/* save string 		*/
 						return -1;
 					u++;
 			  	}	
@@ -78,14 +74,14 @@ char *termchars;	/* termination characters */
 			}	
 			else {
 			  	if(flg == 0) {
-					*u = p;				/* save string begin */
+					*u = p;						/* save string begin */
 					argc++;
 				}
 			  	flg = 1;
 			}
 		}				
 	}
-	*u = NULL;							/* flag end of args */
+	*u = NULL;								/* flag end of args */
 	return argc;
 }
 

@@ -20,7 +20,7 @@
  *  int  os_get_char()
  *  void os_setterm()
  *  void os_restterm()
- *  u_int32 os_access_address( physadr, size, read, value, be_flag )
+ *  unsigned long os_access_address( physadr, size, read, value, be_flag )
  *
  *---------------------------------------------------------------------------
  * Copyright (c) 2003-2019, MEN Mikro Elektronik GmbH
@@ -48,7 +48,6 @@
 #include <termios.h>
 #include <signal.h>
 #include <sys/mman.h>
-#include <sys/io.h>
 #include <asm/errno.h>
 void os_setterm(), os_restterm(), os_exit();
 static struct termios MyOpts, OrgOpts;
@@ -167,11 +166,11 @@ void os_restterm()
  *			or read value
  *			be_flag is set if buserror occurred (not yet implemented)
  */
-u_int32 os_access_address( physadr, size, read, value, be_flag )
-u_int32 physadr;
+unsigned long os_access_address( physadr, size, read, value, be_flag )
+unsigned long physadr;
 int size, read;
-u_int32 value;
-u_int32 *be_flag;
+uint32_t value;
+int *be_flag;
 {
 	void *map_adr, *adr;
 
@@ -196,8 +195,9 @@ u_int32 *be_flag;
 
 //  	printf( "os_access_address: 0x%x  size:%d  read:%d\n", physadr, size, read );
 
-	    /* mmap offset parameter must be a multiple of the page size (0x1000) */
-		map_adr = mmap( NULL, 0x1000, PROT_READ|PROT_WRITE, MAP_SHARED, Memdev,
+	    /* mmap offset parameter must be a multiple of the page size (_SC_PAGESIZE) */
+		long sz = sysconf(_SC_PAGESIZE);
+		map_adr = mmap( NULL, sz, PROT_READ|PROT_WRITE, MAP_SHARED, Memdev,
 						 physadr & ~0xfff );
 
 		if( map_adr == MAP_FAILED ){
@@ -218,21 +218,21 @@ u_int32 *be_flag;
 			}
 		} else {
 			switch(size){
-				case 1: 	*(unsigned char *) adr = value; break;
+				case 1: 	*(unsigned char *)adr = value; break;
 				case 2: 	*(unsigned short *)adr = value; break;
-				case 4: 	*(unsigned long *) adr = value; break;
+				case 4: 	*(unsigned long *)adr = value; break;
 			}
 	 		msync( map_adr, 4, MS_SYNC );
 		}
 
-	    munmap( map_adr, 0x1000 );
+	    munmap( map_adr, sz );
 	}
 cleanup:
     *be_flag = 0;
     return value;
 }
 
-int32 os_init_io_mapped()
+int32_t os_init_io_mapped()
 {
 #ifdef MAC_IO_MAPPED_EN
 	int error = 0;

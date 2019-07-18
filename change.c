@@ -14,7 +14,7 @@
  *---------------------------[ Public Functions ]----------------------------
  *  
  *  change_data( argc, argv )           
- *  void _change_data( adr, size, incr, wonly )
+ *  void _change_data( adr, val, size, incr, wonly )
  *  fill_data( argc, argv )             
  *  
  *---------------------------------------------------------------------------
@@ -41,17 +41,18 @@ void _change_data();
 
 int change_data( int argc, char **argv)
 {
-	int o_size = 1;		/* default=byte accesses */
-	int o_wonly = 0;	/* default read/write */
-	int o_incr = -1;	/* default increment = o_size */
-	static u_int32 last_adr;
-	u_int32 adr;
+	int o_size = 1;					/* default=byte accesses */
+	int o_wonly = 0;				/* default read/write */
+	int o_incr = -1;				/* default increment = o_size */
+	static unsigned long last_adr;
+	unsigned long adr;
 	char *cmdarg = argv[0];
+	long val;
 	
 	/*--------------+
 	| get options   |
 	+--------------*/
-	cmdarg++;				/* skip 'C' */
+	cmdarg++;					/* skip 'C' */
 	while( !isspace(*cmdarg) && *cmdarg ){
 		switch( *cmdarg ){
 			case 'B':					/* byte accesses */
@@ -64,7 +65,7 @@ int change_data( int argc, char **argv)
 				o_size = 4;
 				break;
 			case 'N':
-				o_wonly = 1;			/* write only */
+				o_wonly = 1;				/* write only */
 				break;
 			default:
 				if( isdigit(*cmdarg))
@@ -77,31 +78,47 @@ int change_data( int argc, char **argv)
 
 	if( argc >= 2 ){
 		if( make_hex( argv[1], &adr ) == -1 )
-			return 1;		/* say what? */
+			return 1;					/* say what? */
 	}
-	else
-		adr = last_adr;				
-
+	else{
+		adr = last_adr;
+	}
 	last_adr = adr;
 
-	_change_data( adr, o_size, o_incr, o_wonly );
+	if( argc >= 3 ){
+		if ((make_hex(argv[2], &val) == -1)) 
+			return 1;
+//		val = strtol(argv[2], NULL , 16);			/* the new value to be written */
+	}
+	else{
+		val = -1;
+	}
+
+	_change_data( adr, val, o_size, o_incr, o_wonly );
 
 	return 0;
 }	
 
-void _change_data( adr, size, incr, wonly )
-u_int32 adr;
+void _change_data( adr, val, size, incr, wonly )
+unsigned long adr;
 int size, incr, wonly;
+long val;
 {
 	extern char *get_line();
-	u_int32 value;
+	uint32_t value;
 	char value_fmt[10];
 	char *line;
 	int buserr;
 
 	sprintf( value_fmt, "%%0%dlx ", size*2 );
-	
-	do {
+
+	if( val != -1) {
+		printf("Change the value at %08lX into %lx\n", adr, val);
+		os_access_address( adr, size, 0, val, &buserr );
+	}
+
+	else {
+	    do {
 		printf( "%08lx: ", adr );
 		if( !wonly ){
 			value = os_access_address( adr, size, 1, 0, &buserr );
@@ -133,13 +150,14 @@ int size, incr, wonly;
 		}
 		adr += incr;		
 		printf("\n");
-	} while(1);	
+	    } while(1);
+	}
 }
 
 
 int fill_data( int argc, char **argv)
 {
-	u_int32 adr,fill=0,n,size,buserr;
+	unsigned long adr,fill=0,n,size,buserr;
 	int o_size = 1;		/* default=byte accesses */
 	int o_patt = 0;	
 	int o_incr = -1;	/* default increment = o_size */
@@ -175,15 +193,15 @@ int fill_data( int argc, char **argv)
 	if (argc >=3) {
 		if (make_hex(argv[1], &adr) == -1	||		/* address */
 			make_hex(argv[2], &size) == -1)			/* size */
-			return 1;				/* say what? */
+			return 1;					/* say what? */
 	}
 	else
-		return 1;				/* say what? */
+		return 1;						/* say what? */
 
-	if (o_patt == 0) {							/* no pattern ? */
-		if (argc < 4	||						/* too less args ? */
-			make_hex(argv[3], &fill) == -1)		/* filler */
-				return 1;		/* say what? */
+	if (o_patt == 0) {						/* no pattern ? */
+		if (argc < 4	||					/* too less args ? */
+			make_hex(argv[3], &fill) == -1)			/* filler */
+				return 1;				/* say what? */
 	}
 
 	/*--------------+

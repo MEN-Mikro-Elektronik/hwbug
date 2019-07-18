@@ -1,11 +1,9 @@
-
-#include "typdefs.h"
-
 #ifndef _HWBUG_H_
 #define _HWBUG_H_
 
 #if OS9
 #undef NULL
+#define NL 0x0d
 #include <setjmp.h>
 #include <setsys.h>
 #include <stdio.h>
@@ -14,13 +12,20 @@
 #endif
 
 
-#if defined (LINUX)
+#if defined (LYNX) || defined (HPRT) || defined (LINUX)
 
 #undef NULL
+#define NL 0x0a
+#include <unistd.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <sys/io.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #define FLUSH fflush(stdout)
 #endif
 
@@ -36,14 +41,15 @@ extern int change_data( int argc, char **argv);
 extern int fill_data( int argc, char **argv);
 extern int display_data( int argc, char **argv);
 extern  void os_usage(int argc, char **argv);
-extern int32 os_init_io_mapped(void);
+extern int32_t os_init_io_mapped(void);
 extern void os_init(void);
-extern u_int32 os_access_address( );
+extern unsigned long os_access_address( );
 #endif
 
 int make_hex( );
 int line_args( );
+void free_args( );
 
-extern u_int8 G_iomapped;  /**< flag for performing io-mapped access */
+extern uint8_t G_iomapped;  /**< flag for performing io-mapped access */
 
 #endif /* _HWBUG_H_ */
