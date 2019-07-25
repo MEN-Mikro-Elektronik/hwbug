@@ -82,6 +82,8 @@ static void usage( void )
 {
     printf(
         "\nUsage:    hwbug_cmd startaddr [endaddr] [<opts>]"
+        "\n          Only 32-bit addresses are supported"
+        "\n"
         "\nFunction: change or dump memory (register)"
         "\nOptions: \n"
         "    startaddr  PCI register address                \n"

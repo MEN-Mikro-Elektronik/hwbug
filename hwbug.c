@@ -217,6 +217,9 @@ char *prompt;
 int help_screen()
 {
 	cmd_desc *c = cmd_head;
+	printf("\n Only 32-bit addresses are supported");
+	printf("\n");
+	printf("\n");
 
 	while( c ){
 		printf("%2s%s\n", c->command, c->helpline);
