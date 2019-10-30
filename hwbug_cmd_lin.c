@@ -172,8 +172,7 @@ int main(int argc, char *argv[])
     }
 
     if( endadr == 0x0 ){
-        endadr = startadr;
-        printf("Checking param: endadr is %lx\n", endadr);
+        endadr = startadr + type;
     }
     else {
         if( endadr < startadr ){
@@ -199,12 +198,6 @@ int main(int argc, char *argv[])
     }
 
     size = endadr - startadr;
-    if( size == 0 ){
-        size = type;
-    }
-
-    /* some output at the beginning */
-    header();
 
     if( mapmode == IO_MAPPED ){
         printf( "\nI/O mode\n\n" );
@@ -311,7 +304,7 @@ static void write_register( int type, unsigned long p_adr, uint32_t size, uint32
     uint32_t buserr;
     unsigned long start_p_adr=p_adr;
 
-    while ( p_adr - start_p_adr <= size ) {
+    while ( p_adr - start_p_adr < size ) {
       switch( type ){
         case ONELONG:
             os_access_address( p_adr, 4, 0, value, &buserr, mapmode );
