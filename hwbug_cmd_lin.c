@@ -47,33 +47,14 @@
 #define IO_MAPPED      1
 
 /*-------------------------------------+
-|    GLOBALS                           |
-+-------------------------------------*/
-
-/*-------------------------------------+
 |    PROTOTYPES                        |
 +-------------------------------------*/
-
 int access_io_mapped();
 int32_t os_init_io_mapped();
 static void dump_register ( int type, unsigned long p_adr, uint32_t size, int mapmode );
 static void write_register( int type, unsigned long p_adr, uint32_t size, uint32_t value, int mapmode );
 unsigned long os_access_address( );
 long int strtol (const char* str, char** endptr, int base);
-//unsigned long os_access_address(unsigned long physadr, int type, int read, uint32_t value, int *be_flag, int mapmode );
-
-/*********************************** header ***********************************/
-/** Prints the headline
- */
-static void header( void )
-{
-    printf(
-        "\n============================"
-        "\n===      HWBUG_CMD       ==="
-        "\n===   $Revision: 1.1 $   ==="
-        "\n============================\n"
-    );
-}
 
 /************************************ usage ***********************************/
 /** Prints the program usage
@@ -81,27 +62,29 @@ static void header( void )
 static void usage( void )
 {
     printf(
-        "\nUsage:    hwbug_cmd startaddr [endaddr] [<opts>]"
-        "\n          Only 32-bit addresses are supported"
         "\n"
-        "\nFunction: change or dump memory (register)"
-        "\nOptions: \n"
-        "    startaddr  PCI register address                \n"
-        "    [endaddr]  PCI register end address            \n"
-        "    [-d]       dump register content               \n"
-        "    [-b|-w|-l] Byte OR Word OR Long access  [Byte] \n"
-        "    [-i]       activate I/O mode                   \n"
-        "    [-v=hex]   value to write in register   [0x0]  \n"
-        "\nCalling examples:\n"
-        " - dump a (valid) PCI address range (memory-mapped, byte access):\n"
-        "    hwbug 0xfdbe0000 0xfdbeffff -d \n"
-        " - change a (valid) PCI register (memory-mapped, long access):\n"
-        "    hwbug 0xfdbe0000 -l -v=0x12345678 \n"
-        " - disable F11S FPGA watchdog (i/o-mapped): \n"
-        "    hwbug 0xd910 -w -v=0x7fff -i\n"
-        " - enable F11S FPGA watchdog (i/o-mapped): \n"
-        "    hwbug 0xd910 -w -v=0x8000 -i\n"
-        "\nCopyright (c) 2018-2019, MEN Mikro Elektronik GmbH\n\n\n");
+        "Usage:    hwbug_cmd <startaddr> [<endaddr>] [<opts>]\n"
+        "\n"
+        "Function: Mem R/W Utility\n"
+        "          Only 32-bit addresses are supported\n"
+        "\n"
+        "Options:                             [default]\n"
+        "    [-d]       dump memory\n"
+        "    [-v=<hex>  write hex to memory   [0x0]\n"
+        "    [-b|-w|-l] byte/word/long access [byte]\n"
+        "    [-i]       i/o mapped access     [memory mapped]\n"
+        "\n"
+        "Calling examples:\n"
+        " - dump memory address range (memory mapped, byte access):\n"
+        "    hwbug_cmd 0xfdbe0000 0xfdbeffff -d\n"
+        " - write value to memory (memory-mapped, long access):\n"
+        "    hwbug_cmd 0xfdbe0000 -l -v=0x12345678\n"
+        " - disable F11S FPGA watchdog (i/o-mapped, word access):\n"
+        "    hwbug_cmd 0xd910 -w -v=0x7fff -i\n"
+        " - enable F11S FPGA watchdog (i/o-mapped, word access):\n"
+        "    hwbug_cmd 0xd910 -w -v=0x8000 -i\n"
+        "\n"
+        "(c) 2018-2019, MEN Mikro Elektronik GmbH, Version 1.2\n\n");
 }
 
 /******************************************************************************/
@@ -158,14 +141,12 @@ int main(int argc, char *argv[])
                break;
             }
         }
-
     }
 
     /*--------------------+
     |  verify arguments   |
     +--------------------*/
     if( startadr == 0x0 ){
-        printf("\nstartadr is 0x0?? Please enter a valid address!\n");
         usage();
         retval = (-1);
         goto EXIT;
@@ -200,16 +181,16 @@ int main(int argc, char *argv[])
     size = endadr - startadr;
 
     if( mapmode == IO_MAPPED ){
-        printf( "\nI/O mode\n\n" );
+        printf( "\ni/o mapped access\n\n" );
     }
     /* dump register values */
     if( read ){
-        printf("Dump register from address %lx\n", startadr);
+        printf("Dump memory %lx..%lx\n", startadr, endadr);
         dump_register( type, startadr, size, mapmode );
     }
     /* change register values */
     else if ( write ){
-        printf("Write register from address %lx with value %lx\n", startadr, value);
+        printf("Write value 0x%lx to memory 0x%lx..0x%lx\n", value, startadr, endadr);
         write_register( type, startadr, size, value, mapmode );
     }
     else {
@@ -219,9 +200,7 @@ int main(int argc, char *argv[])
     }
 
 EXIT:
-
     return retval;
-
 }
 
 /******************************* dump_register ********************************/
@@ -335,7 +314,6 @@ unsigned long os_access_address(unsigned long physadr, int type, int read, uint3
 
 #ifdef MAC_IO_MAPPED_EN
     if( mapmode == IO_MAPPED) {
-//        printf("Do access_io_mapped\n");
         access_io_mapped();
         if( read ){
             switch(type){
@@ -355,13 +333,12 @@ unsigned long os_access_address(unsigned long physadr, int type, int read, uint3
 #endif /*MAC_IO_MAPPED_EN*/
 
     else {
-        /* mmap offset parameter must be a multiple of the page size (_SC_PAGESIZE) */
-  
         if( (Memdev = open( "/dev/mem", O_RDWR )) < 0 ){
             perror("can't open /dev/mem");
             goto cleanup;
         }
 
+        /* mmap offset parameter must be a multiple of the page size (_SC_PAGESIZE) */
         map_adr = mmap( NULL, sz, PROT_READ|PROT_WRITE, MAP_SHARED, Memdev, physadr & ~0xfff );
 
         if( map_adr == MAP_FAILED ){
@@ -399,30 +376,23 @@ unsigned long os_access_address(unsigned long physadr, int type, int read, uint3
     cleanup:
         *be_flag = 0;
         return value;
-
 }
 
 int access_io_mapped()
 {
     int32_t error = 0;
-//    printf("Do os_init_io_mapped\n");
     if( (error = os_init_io_mapped()) < 0)
         printf("IO-Mapped access not supported or initialization failed\n");
     return error;
-//    printf("Done access_io_mapped\n");
 }
-
 
 int32_t os_init_io_mapped()
 {
 #ifdef MAC_IO_MAPPED_EN
     int error = 0;
-//    printf("Do iopl(3)\n");
     error = iopl(3);
-//    printf("Done iopl(3)\n");
     if(error)
         return -error;
-//    printf("Done init_io_map\n");
     return 0;
 #else
     return -EOPNOTSUPP;
