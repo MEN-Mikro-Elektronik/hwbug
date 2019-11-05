@@ -1,5 +1,7 @@
 # HWBUG - Memory (HW Register) read/write Utility
 
+Note: This repo contains currently only the HWBUG for Linux implementation.
+
 There are two tools, that supports read/write access to physical memory locations (e.g. device registers):
 
 - hwbug - classic hwbug tool with CLI
