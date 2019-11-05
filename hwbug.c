@@ -55,19 +55,20 @@ int control_c = 0;
 uint8_t G_iomapped = 0;
 
 static char
-	*h_h  = "                            Display help",
-	*h_q  = "                            Quit",
-	*h_c  = "[B|W|L|N|#] <adr> [val]     Change Memory \n\
-                              (B)yte (W)ord (L)ong (N)oRead (#)Increm.",
-	*h_d  = "[B|W|L] [<adr> <cnt>]       Display Memory \n\
-                              (B)yte (W)ord (L)ong",
-	*h_f  = "[B|W|L]  <adr> <cnt> <val>  Fill Memory with fixed Values\n\
-                              (B)yte (W)ord (L)ong\n\
- F[B|W|L]P <adr> <cnt>        Fill Memory with linear Pattern\n\
-                              (B)yte (W)ord (L)ong",
-	*h_i = "                             perform io_mapped accesses\n\
-	                           when supported",
-	*h_m = "                             perform mem_mapped accesses";
+	*h_h  = "                              Show this usage info",
+	*h_q  = "                              Quit",
+	*h_c  = "[B|W|L][N][<#>] <adr> [<val>] Change memory\n\
+                                  (B)yte/(W)ord/(L)ong access, (N)oRead,\n\
+                                  increment B/W/L or <#> bytes,\n\
+                                  use '-' to go back and '.' to quit",
+	*h_d  = "[B|W|L] [<adr>] [<cnt>]       Display memory\n\
+                                  (B)yte (W)ord (L)ong",
+	*h_f  = "[B|W|L]  <adr> <cnt> <val>    Fill memory with <val>\n\
+                                  (B)yte (W)ord (L)ong\n\
+ F[B|W|L]P <adr> <cnt>          Fill memory with linear pattern\n\
+                                  (B)yte (W)ord (L)ong",
+	*h_i = "                              i/o mapped accesses (if supported)",
+	*h_m = "                              memory mapped accesses (default)";
 
 /*----------------------------------------------------------------------
  * command descriptor structure
@@ -185,8 +186,6 @@ char *prompt;
 	
 			case CTRL('H'):					/* backspace */
 				if( cursor != linebuf ){
-//					cursor--;
-//					*cursor-- = '\0';
 					printf(	"\b " );
 				}
 			case CTRL('X'):					/* clear line */
@@ -217,9 +216,7 @@ char *prompt;
 int help_screen()
 {
 	cmd_desc *c = cmd_head;
-	printf("\n Only 32-bit addresses are supported");
-	printf("\n");
-	printf("\n");
+	printf("Commands:\n");
 
 	while( c ){
 		printf("%2s%s\n", c->command, c->helpline);
@@ -230,7 +227,7 @@ int help_screen()
 	printf(" ^W = up history       ^N = down history\n");
 	printf(" ^H = delete char      ^X = kill line\n");
 	printf("\n");
-	printf("Version: 2.0, 2018\n");
+	printf("Note: Only 32-bit addresses are supported\n");
 	
 	return 0;
 }
@@ -250,6 +247,7 @@ void what()
 int access_io_mapped()
 {
 	int32_t error = 0;
+	printf("switch to io mapped access\n");
 	if( (error = os_init_io_mapped()) < 0)
 		printf("IO-Mapped access not supported or initialization failed\n");
 	
@@ -258,6 +256,7 @@ int access_io_mapped()
 
 int access_mem_mapped()
 {
+	printf("switch to mem mapped access\n");
 	G_iomapped = 0;
 	
 	return 0;
@@ -277,13 +276,13 @@ int main(int argc, char **argv)
 	char **c_argv = c_argv_alloc;
 	int c_argc;
 
-	add_command( "H", help_screen, h_h, 0 );
 	add_command( "C", change_data, h_c, 0 );
 	add_command( "F", fill_data, h_f, 0 );
 	add_command( "D", display_data, h_d, 1 );
-	add_command( "Q", quit, h_q, 0 );
 	add_command( "I", access_io_mapped, h_i, 0 );
 	add_command( "M", access_mem_mapped, h_m, 0 );
+	add_command( "H", help_screen, h_h, 0 );
+	add_command( "Q", quit, h_q, 0 );
 
 	os_usage(argc,argv);
 	
@@ -293,13 +292,12 @@ int main(int argc, char **argv)
 	}
 
 	if( os_mode ) {
-		printf(",------------------------------,\n");
-		printf("|   HwBug - Hardware Debugger  |\n");
-		printf("|    by K.Popp, R.Seeberger    |\n");
-		printf("|                              |\n");
-		printf("|   Press 'H' for help-screen  |\n");
-		printf(" ------------------------------'\n\n");
-		printf("Copyright (c) 1993-2019, MEN Mikro Elektronik GmbH\n");
+		printf(",------------------------------------------,\n");
+		printf("| HwBug - Mem R/W Utility, Version 2.1     |\n");
+		printf("|                                          |\n");
+		printf("| Press 'H' for Command Overview           |\n");
+		printf("| (c) 1993-2019, MEN Mikro Elektronik GmbH |\n");
+		printf(" ------------------------------------------'\n\n");
 	}
 
 	os_init();

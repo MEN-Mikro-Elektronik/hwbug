@@ -74,7 +74,6 @@ char **argv;
  */
 void os_init()
 {
-	extern int assemble(), disassemble(), execute_program();
 	void catch_sigint(), catch_sigbus();
 
 	signal( SIGINT, catch_sigint );
