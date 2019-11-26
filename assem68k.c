@@ -17,7 +17,7 @@
  *	assemble( argc, argv )
  *  
  *---------------------------------------------------------------------------
- * Copyright (c) 1993-2019, MEN Mikro Elektronik GmbH
+ * Copyright 1993-2019, MEN Mikro Elektronik GmbH
  ****************************************************************************/
  /*
  * This program is free software: you can redistribute it and/or modify

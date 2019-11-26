@@ -24,7 +24,7 @@
  *  unsigned long os_access_address( physadr, size, read, value, be_flag )
  *  
  *---------------------------------------------------------------------------
- * Copyright (c) 1993-2019, MEN Mikro Elektronik GmbH
+ * Copyright 1993-2019, MEN Mikro Elektronik GmbH
  ****************************************************************************/
  /*
  * This program is free software: you can redistribute it and/or modify
