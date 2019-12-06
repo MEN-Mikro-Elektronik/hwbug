@@ -7,10 +7,23 @@ There are two tools, that supports read/write access to physical memory location
 - hwbug - classic hwbug tool with CLI
 - hwbug_cmd - scriptable hwbug tool with call parameters
 
-Note: The repo contains the following hwbug binaries:
+The repo contains the following hwbug binaries:
 
 - x86 32-bit    : hwbug_x86, hwbug_cmd_x86
 - PowerPc 32-bit: hwbug_ppc, hwbug_cmd_ppc
+
+**Accessing PCI devices**
+
+Because UEFI boot doesn't enable the memory regions of PCI devices as the legacy BIOS boot did, you may run into trouble if you try to access these memory regions with hwbug under Linux.
+As workaround, you can manually enable the memory regions under Linux from the command line:
+
+```
+# setpci -s 07:00.0 COMMAND
+0100
+# setpci -s 07:00.0 COMMAND=0x103
+```
+
+Where 07:00.0 is the PCI bus:dev.func location of the PCI device. Read the current value of the PCI configuration space command register, and write back the value ORed with 0x1 to enable the I/O space and 0x2 to enables the memory space.
 
 ## hwbug
 
