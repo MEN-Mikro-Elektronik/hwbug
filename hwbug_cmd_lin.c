@@ -34,7 +34,9 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <ctype.h>
+#ifdef MAC_IO_MAPPED_EN
 #include <sys/io.h>
+#endif
 #include <sys/mman.h>
 #include <asm/errno.h>
 
@@ -329,10 +331,10 @@ unsigned long os_access_address(unsigned long physadr, int type, int read, uint3
                 case 4:         outl((unsigned int)value,       physadr); break;
             }
         }
-    }
+    } else
 #endif /*MAC_IO_MAPPED_EN*/
+    {
 
-    else {
         if( (Memdev = open( "/dev/mem", O_RDWR )) < 0 ){
             perror("can't open /dev/mem");
             goto cleanup;

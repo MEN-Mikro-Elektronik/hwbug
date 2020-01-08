@@ -36,7 +36,10 @@ SRC         = hwbug_cmd_lin.c
 TARGET_     = hwbug
 TARGET      = hwbug_cmd
 
-MAK_SWITCH  := -DLINUX -DMAC_IO_MAPPED_EN
+MAK_SWITCH  := -DLINUX
+ifneq "$(shell uname -m)" "ppc"
+MAK_SWITCH  += -DMAC_IO_MAPPED_EN
+endif
 CFLAGS      := -g -s $(MAK_SWITCH) 
 INC_        := -I./ -I/usr/src/linux/include
 INC         := -I/usr/src/linux/include
