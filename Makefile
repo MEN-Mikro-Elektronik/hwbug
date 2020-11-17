@@ -5,7 +5,7 @@
 #    Description: Makefile for hwbug and hwbug_cmd under linux
 #
 #-----------------------------------------------------------------------------
-#   Copyright (c) 2018-2019, MEN Mikro Elektronik GmbH
+#   Copyright (c) 2018-2020, MEN Mikro Elektronik GmbH
 #*****************************************************************************
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -36,7 +36,10 @@ SRC         = hwbug_cmd_lin.c
 TARGET_     = hwbug
 TARGET      = hwbug_cmd
 
-MAK_SWITCH  := -DLINUX -DMAC_IO_MAPPED_EN
+MAK_SWITCH  := -DLINUX
+ifneq "$(shell uname -m)" "ppc"
+MAK_SWITCH  += -DMAC_IO_MAPPED_EN
+endif
 CFLAGS      := -g -s $(MAK_SWITCH) 
 INC_        := -I./ -I/usr/src/linux/include
 INC         := -I/usr/src/linux/include
