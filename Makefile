@@ -41,6 +41,7 @@ ifneq "$(shell uname -m)" "ppc"
 MAK_SWITCH  += -DMAC_IO_MAPPED_EN
 endif
 CFLAGS      := -g -s $(MAK_SWITCH) 
+LDFLAGS     := -static
 INC_        := -I./ -I/usr/src/linux/include
 INC         := -I/usr/src/linux/include
 WARN_LEVEL  := -Wall -Wno-format
@@ -57,13 +58,13 @@ $(BUILDDIR)%.o : $(SRCDIR)%.c
 # Build hwbug 
 $(TARGET_) : $(OBJECTS)
 	@echo [INFO] Creating Binary [$(TARGET_)]
-	$(CC) $(INC_) $(WARN_LEVEL) $(OBJECTS) -o $@
+	$(CC) $(INC_) $(WARN_LEVEL) $(OBJECTS) -o $@ $(LDFLAGS)
 
 # Build hwbug_cmd 
 $(TARGET) : $(OBJ)
 	@echo [CC] $<
 	@echo [INFO] Creating Binary [$(TARGET)]
-	$(CC) $(CFLAGS) $(INC) $(WARN_LEVEL) $(SRCDIR)$(SRC) -o $@
+	$(CC) $(CFLAGS) $(INC) $(WARN_LEVEL) $(SRCDIR)$(SRC) -o $@ $(LDFLAGS)
 
 
 all: $(TARGET_) $(TARGET) 
@@ -75,5 +76,5 @@ all: $(TARGET_) $(TARGET)
 clean:
 	@echo "[Cleaning]"
 	$(RM) $(BUILDDIR)*o
-	$(RM) {$(TARGET_),$(TARGET)}
+	$(RM) $(TARGET_) $(TARGET)
 

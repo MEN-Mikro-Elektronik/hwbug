@@ -276,6 +276,11 @@ int main(int argc, char **argv)
 	char **c_argv = c_argv_alloc;
 	int c_argc;
 
+	if (is_kernel_locked_down()) {
+		printf("*** WARNING: Linux kernel lockdown functionality is enabled. /dev/mem is not\n"
+		       "             accessible and hwbug is not usable.\n");
+	}
+
 	add_command( "C", change_data, h_c, 0 );
 	add_command( "F", fill_data, h_f, 0 );
 	add_command( "D", display_data, h_d, 1 );

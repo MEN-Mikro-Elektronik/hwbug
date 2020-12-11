@@ -246,3 +246,24 @@ int32_t os_init_io_mapped()
 	return -EOPNOTSUPP;
 #endif
 }
+
+/** \brief Check if kernel is locked down
+ * \return 0 if kernel is not locked down
+ * \return non-zero if kernel is locked down
+ */
+int is_kernel_locked_down()
+{
+	char mode[6];
+	int ret = 0;
+
+	int fd = open("/sys/kernel/security/lockdown", O_RDONLY);
+	if (-1 != fd) {
+		if (read(fd, mode, 6) < 6 ||
+		    memcmp(mode, "[none]", 6)) {
+			ret = 1;
+		}
+		close(fd);
+	}
+
+	return ret;
+}

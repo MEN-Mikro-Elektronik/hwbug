@@ -34,6 +34,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <ctype.h>
+#include <string.h>
 #ifdef MAC_IO_MAPPED_EN
 #include <sys/io.h>
 #endif
@@ -57,6 +58,7 @@ static void dump_register ( int type, unsigned long p_adr, uint32_t size, int ma
 static void write_register( int type, unsigned long p_adr, uint32_t size, uint32_t value, int mapmode );
 unsigned long os_access_address( );
 long int strtol (const char* str, char** endptr, int base);
+int is_kernel_locked_down();
 
 /************************************ usage ***********************************/
 /** Prints the program usage
@@ -105,6 +107,11 @@ int main(int argc, char *argv[])
     unsigned long size=0;                    /* size between startadr and endadr */
     unsigned long value=0x0;
     int      read=0, write=0, i, retval=0;
+
+    if (is_kernel_locked_down()) {
+        printf("*** WARNING: Linux kernel lockdown functionality is enabled. /dev/mem is not\n"
+               "             accessible and hwbug_cmd is not usable.\n");
+    }
 
     /*--------------------+
     |  get arguments      |
@@ -399,4 +406,25 @@ int32_t os_init_io_mapped()
 #else
     return -EOPNOTSUPP;
 #endif
+}
+
+/** \brief Check if kernel is locked down
+ * \return 0 if kernel is not locked down
+ * \return non-zero if kernel is locked down
+ */
+int is_kernel_locked_down()
+{
+    char mode[6];
+    int ret = 0;
+
+    int fd = open("/sys/kernel/security/lockdown", O_RDONLY);
+    if (-1 != fd) {
+        if (read(fd, mode, 6) < 6 ||
+            memcmp(mode, "[none]", 6)) {
+            ret = 1;
+        }
+        close(fd);
+    }
+
+    return ret;
 }

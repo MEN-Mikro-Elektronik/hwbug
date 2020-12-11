@@ -64,6 +64,7 @@ extern  void os_usage(int argc, char **argv);
 extern int32_t os_init_io_mapped(void);
 extern void os_init(void);
 extern unsigned long os_access_address( );
+extern int is_kernel_locked_down();
 #endif
 
 int make_hex( );
